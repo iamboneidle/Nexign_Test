@@ -69,6 +69,7 @@ public class UDRService {
         this.columnNamesOneUserOneMonth.add("User");
         this.columnNamesOneUserOneMonth.add("incomingCall");
         this.columnNamesOneUserOneMonth.add("outcomingCall");
+        generateReport();
     }
 
     /**
@@ -77,7 +78,7 @@ public class UDRService {
      *
      * @throws RuntimeException в случае ошибки чтения файла
      */
-    public void generateReport() {
+    private void generateReport() {
         List<String> calls;
         Map<String, List<String>> forTable = new HashMap<>();
         try {
