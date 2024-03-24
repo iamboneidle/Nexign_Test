@@ -78,7 +78,7 @@ public class UDRService {
      *
      * @throws RuntimeException в случае ошибки чтения файла
      */
-    private void generateReport() {
+    public void generateReport() {
         List<String> calls;
         Map<String, List<String>> forTable = new HashMap<>();
         try {
@@ -285,20 +285,24 @@ public class UDRService {
      * @param data отношение номера телефона пользователя к данным о его звонках
      */
     private void makeTable(Map<String, List<String>> data) {
-        AT_Context atContext = new AT_Context();
-        atContext.setWidth(TABLE_WIDTH_BIG);
-        AsciiTable at = new AsciiTable(atContext);
-        at.addRule();
-        at.addRow(columnNames);
-        for (String msisdn : data.keySet()) {
+        if (data.isEmpty()) {
+            LOGGER.log(Level.SEVERE, "NO CONTENT TO PUT INTO THE TABLE");
+        } else {
+            AT_Context atContext = new AT_Context();
+            atContext.setWidth(TABLE_WIDTH_BIG);
+            AsciiTable at = new AsciiTable(atContext);
             at.addRule();
-            List<String> userCallsTime = data.get(msisdn);
-            userCallsTime.addAll(Collections.nCopies(columnNames.size() - userCallsTime.size(), DEFAULT_TABLE_TIME_VALUE));
-            at.addRow(userCallsTime);
+            at.addRow(columnNames);
+            for (String msisdn : data.keySet()) {
+                at.addRule();
+                List<String> userCallsTime = data.get(msisdn);
+                userCallsTime.addAll(Collections.nCopies(columnNames.size() - userCallsTime.size(), DEFAULT_TABLE_TIME_VALUE));
+                at.addRow(userCallsTime);
+            }
+            at.addRule();
+            String rend = at.render();
+            LOGGER.log(Level.INFO,"REPORT: \n" + rend);
         }
-        at.addRule();
-        String rend = at.render();
-        LOGGER.log(Level.INFO,"REPORT: \n" + rend);
     }
 
     /**
